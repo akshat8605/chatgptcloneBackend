@@ -100,7 +100,10 @@ exports.getChat = async (req, res) => {
       
     });
     if(chatExist){
-      const decoded = await jwt.verify(token, 'dskfjslkdjfm2');
+      let decoded;
+      if(token){
+       decoded = await jwt.verify(token, 'dskfjslkdjfm2');
+      }
       // console.log(decoded, chatExist)
       if (decoded ) {
         if((decoded.id == chatExist.userId )){
@@ -122,6 +125,14 @@ exports.getChat = async (req, res) => {
           message: 'You are not authorised for this chat.'
         })
       }
+      }
+      else if (chatExist.shared){
+        res.json({
+          data: chatExist,
+          status:true,
+          shared:true,
+          login:false
+        });
       }
       else{
         res.json({
